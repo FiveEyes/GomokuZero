@@ -8,11 +8,11 @@ game_config = {
 }
 
 mcts_config = {
-	'temperature_step': 400
+	'temperature_step': 40
 }
 
 mcts_player_config = {
-	'rollout_times': 10
+	'rollout_times': 400
 }
 
 pvn_config = {
