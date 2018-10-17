@@ -1,5 +1,9 @@
 import copy
 import numpy as np
+import pickle as pkl
+import os.path
+ 
+
 from queue import Queue
 
 from board import Board
@@ -8,6 +12,7 @@ import config
 
 board_n = config.board_config['board_n']
 win = config.board_config['win']
+save_path = config.memory_config['save_path']
 
 def decode_board(bh):
 	bs = []
@@ -64,11 +69,42 @@ class Memory(object):
 		self.phb = []
 		self.vhb = []
 		self.bpv_queue = Queue()
+		self.game_id = config.memory_config['game_id']
+		self.file_prefix = save_path + str(board_n) + '_' + str(win) + '_'
+		self.load_files(save_path)
+	
+	def get_game_id(self):
+		return self.game_id
+		
 	def push_history_queue(self, bh, ph, vh):
-		self.bpv_queue.put((bh, ph, vh))
+		bpvh = (bh, ph, vh)
+		self.save_data(bpvh)
+		self.bpv_queue.put(bpvh)
+	def save_data(self, bpvh):
+		file_name = self.file_prefix + str(self.game_id) + '.sav'
+		while os.path.isfile(file_name):
+			self.game_id += 1
+			file_name = self.file_prefix + str(self.game_id) + '.sav'
+		with open(self.file_prefix + str(self.game_id) + '.sav', 'wb') as f:
+			pkl.dump((bh, ph, vh), f)
+		self.game_id += 1
+		
+	def load_file(self, file_name):
+		if not os.path.isfile(file_name):
+			return False
+		#print(file_name)
+		with open(file_name, 'rb') as f:
+			bpvh = pkl.load(f)
+			self.bpv_queue.put(bpvh)
+		return True
 
+	def load_files(self, path):
+		while self.load_file(self.file_prefix + str(self.game_id) + '.sav'):
+			self.game_id += 1
+			
+			
 	def push_history(self, bh, ph, vh):
-		if len(self.vhb) >= self.buff_max_sz:
+		if self.buff_max_sz > 0 and len(self.vhb) >= self.buff_max_sz:
 			self.bhb = self.bhb[len(self.vhb)//2:]
 			self.phb = self.phb[len(self.vhb)//2:]
 			self.vhb = self.vhb[len(self.vhb)//2:]

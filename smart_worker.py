@@ -33,8 +33,11 @@ class SmartWorker(threading.Thread):
 		return predict_fn
 		
 	def run(self):
-		for i in range(self.n):
-			print("Worker", self.id, "Match", i)
-			bh, ph, vh = train.gen_selfplay_data(self.get_predict_fn())
-			self.server.push_history_queue(bh, ph, vh)
+		while True:
+			game_id = self.server.get_next_game_id()
+			if game_id == None:
+				break
+			print("Worker", self.id, "Match", game_id)
+			bh, ph, vh = train.gen_selfplay_data(self.get_predict_fn(), "Worker " + str(self.id) + ", Match " + str(game_id))
+			self.server.push_history_queue(game_id, bh, ph, vh)
 		self.quit_queue.put(self.id)

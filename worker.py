@@ -19,8 +19,8 @@ class Worker(threading.Thread):
 		self.server = server
 	def run(self):
 		for i in range(self.n):
-			print("Worker", self.id, "Match", i)
+			print("Starting Worker", self.id, "Match", i)
 			pvnet = self.server.get_pvnet()
-			bh, ph, vh = train.gen_selfplay_data(pvnet.get_pvnet_fn())
+			bh, ph, vh = train.gen_selfplay_data(pvnet.get_pvnet_fn(), "Worker " + self.id + ", Match " + i)
 			self.server.push_history_queue(bh, ph, vh)
 			

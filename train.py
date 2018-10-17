@@ -11,9 +11,9 @@ import config
 board_n = config.board_config['board_n']
 win = config.board_config['win']
 
-def gen_selfplay_data(pvnet_fn):
+def gen_selfplay_data(pvnet_fn, name_str = None):
 	board = Board(board_n, win)
-	game = Game()
+	game = Game(name_str)
 	mcts_player = MCTSPlayer(pvnet_fn)
 	bh, ph, vh = game.selfplay(board, mcts_player)
 	return bh, ph, vh

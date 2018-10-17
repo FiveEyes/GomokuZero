@@ -8,9 +8,39 @@ def show_policy(policy):
 def simpl_policy(policy):
 	index = np.nonzero(policy[1])
 	return [policy[0][index], policy[1][index]]
+	
+def show_board_policy_value(board, policy, value):
+	move_policy = zip(policy[0], policy[1])
+	move_policy = sorted(move_policy, key=lambda mp: mp[1])
+	history = board.get_history()
+	last_x = history[-1] // board.n
+	last_y = history[-1] % board.n
+	best_x = move_policy[-1][0] // board.n
+	best_y = move_policy[-1][0] % board.n
+	print("{0}x{0}-{1}, player {2}, len {3}".format(board.n, board.m, 3 - board.get_cur_player(), len(history)))
+	b = board.get_board()
+	for i in range(board.n):
+		s = ''
+		for j in range(board.n):
+			if i == last_x and j == last_y:
+				s += str(5 - board.get_cur_player())
+			elif i == best_x and j == best_y:
+				s += "S"
+			elif b[i,j,0] == 1.0:
+				s += '_'
+			elif b[i,j,1] == 1.0:
+				s += '1'
+			else:
+				s += '2'
+		print(s)
+	print(history)
+	move_policy = list(filter(lambda mp: mp[1] > 0.01, move_policy))
+	print("policy:", sorted(move_policy, key=lambda mp: mp[1]))
+	print("value: ", value)
 
 class Game(object):
-	def __init__(self):
+	def __init__(self, name = None):
+		self.name = name
 		return
 	def selfplay(self, board, player):
 		show_b = config.game_config['show']
@@ -27,9 +57,9 @@ class Game(object):
 					break
 			policy = simpl_policy(policy)
 			if show_b:
-				board.show()
-				show_policy(policy)
-				print("value: ", value)
+				if self.name != None:
+					print(self.name)
+				show_board_policy_value(board, policy, value)
 			#print(str(len(board.get_history())) + ' ', end='', flush=True)
 
 

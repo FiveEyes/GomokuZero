@@ -23,10 +23,16 @@ pvn_config = {
 
 train_config = {
 	'train_samples': 50,
-	'buff_max_sz': 100000,
+	'buff_max_sz': -1,
 }
 
 server_config = {
+	'game_num': 100,
 	'worker_n': 20,
 	'worker_play_n': 5
+}
+
+memory_config = {
+	'game_id': 0,
+	'save_path': 'selfplaydata/'
 }

@@ -46,22 +46,34 @@ class SmartServer(object):
 		self.ret_qs = []
 		self.pw = PredictWorker(self)
 		self.pw.start()
+		self.game_id = self.mem.get_game_id()
+		self.game_num = config.server_config['game_num']
+		self.game_id_queue = Queue()
 		return
 	def get_pvnet(self):
 		return self.pvnet
 	def get_call_queue(self):
 		return self.call_queue
+	def get_next_game_id(self):
+		try:
+			id = self.game_id_queue.get_nowait()
+			return id
+		except:
+			return None
 		
 	def get_quit_queue(self):
 		return self.quit_queue
 		
-	def push_history_queue(self, bh, ph, vh):
+	def push_history_queue(self, game_id, bh, ph, vh):
 		self.mem.push_history_queue(bh, ph, vh)
 
 	def train(self):
+		for i in range(self.game_num):
+			self.game_id_queue.put(self.game_id + i)
+		self.game_id += self.game_num
+		
 		workers = [ SmartWorker(i, self.worker_play_n, self) for i in range(self.worker_n)]
 		self.ret_qs = [ w.get_ret_queue() for w in workers]
-		
 		for i, worker in enumerate(workers):
 			print("Starting worker {}".format(i))
 			worker.start()
