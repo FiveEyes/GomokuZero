@@ -86,7 +86,7 @@ class Memory(object):
 			self.game_id += 1
 			file_name = self.file_prefix + str(self.game_id) + '.sav'
 		with open(self.file_prefix + str(self.game_id) + '.sav', 'wb') as f:
-			pkl.dump((bh, ph, vh), f)
+			pkl.dump(bpvh, f)
 		self.game_id += 1
 		
 	def load_file(self, file_name):
