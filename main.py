@@ -9,7 +9,6 @@ from board import Board
 from game import Game 
 from players import HumanPlayer
 from train import train
-from server import Server
 from smart_server import SmartServer
 import config
 
@@ -29,12 +28,7 @@ def simple_train():
 	while True:
 		train(pvnet, config.train_config['train_samples'])
 		pvnet.save_model(model_filename)
-def worker_train():
-	pvnet = PolicyValueNet(board_n, model_filename)
-	server = Server(pvnet)
-	while True:
-		server.train()
-		pvnet.save_model(model_filename)
+
 def smart_worker_train():
 	pvnet = PolicyValueNet(board_n, model_filename)
 	server = SmartServer(pvnet)
@@ -44,7 +38,6 @@ def smart_worker_train():
 
 def main():
 	#simple_train()
-	#worker_train()
 	smart_worker_train()
 
 		

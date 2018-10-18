@@ -24,6 +24,11 @@ class NoobPlayer(object):
 		self.n = n
 		self.m = m
 	def suggest(self, board):
+		if len(board.get_history()) == 0:
+			if np.random.randint(2) == 0:
+				return (self.n // 2 * self.n + self.n // 2), [[(self.n // 2 * self.n + self.n // 2)], [1.0]], 0.0
+			else:
+				return None, None, None
 		p1 = board.get_cur_player()
 		p2 = 3 - p1
 		policy_move = []

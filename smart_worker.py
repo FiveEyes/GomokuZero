@@ -1,8 +1,6 @@
-import threading
-
 import copy
 import numpy as np
-from queue import Queue
+from multiprocessing import Queue
 
 
 from policy_value_net import PolicyValueNet
@@ -13,9 +11,8 @@ import train
 
 import config
 
-class SmartWorker(threading.Thread):
+class SmartWorker():
 	def __init__(self, id, n, server):
-		threading.Thread.__init__(self)
 		self.id = id
 		self.n = n
 		self.server = server
@@ -31,13 +28,17 @@ class SmartWorker(threading.Thread):
 			m,p,v =  self.ret_queue.get()
 			return (m,p),v
 		return predict_fn
-		
+	def get_run_fn(self):
+		return lambda : self.run()
 	def run(self):
 		while True:
 			game_id = self.server.get_next_game_id()
 			if game_id == None:
 				break
+			
+			np.random.seed(game_id+np.random.randint(100000000))
 			print("Worker", self.id, "Match", game_id)
 			bh, ph, vh = train.gen_selfplay_data(self.get_predict_fn(), "Worker " + str(self.id) + ", Match " + str(game_id))
 			self.server.push_history_queue(game_id, bh, ph, vh)
-		self.quit_queue.put(self.id)
+			self.quit_queue.put(game_id)
+		print("Worker", self.id, " done")

@@ -4,7 +4,7 @@ import pickle as pkl
 import os.path
  
 
-from queue import Queue
+from multiprocessing import Queue
 
 from board import Board
 from game import Game
@@ -110,7 +110,7 @@ class Memory(object):
 			self.vhb = self.vhb[len(self.vhb)//2:]
 		bh = decode_board(bh)
 		ph = [decode_policy(policy) for policy in ph]
-		print("match size:", len(bh))
+		#print("match size:", len(bh))
 		for i in range(len(vh)):
 			bm, pm, vm = gen_mirrors(bh[i], ph[i], vh[i])
 			bs, ps, vs = gen_rotations(bh[i], ph[i], vh[i])
@@ -121,11 +121,12 @@ class Memory(object):
 			self.bhb += bs
 			self.phb += ps
 			self.vhb += vs
-		print("buff size:", len(self.bhb))
+		#print("buff size:", len(self.bhb))
 		
 	def get_history(self):
 		while not self.bpv_queue.empty():
 			bh, ph, vh = self.bpv_queue.get()
 			self.push_history(bh, ph, vh)
+		print("buff size:", len(self.bhb))
 		return self.bhb, self.phb, self.vhb
 	

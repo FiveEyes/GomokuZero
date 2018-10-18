@@ -12,7 +12,7 @@ mcts_config = {
 }
 
 mcts_player_config = {
-	'rollout_times': 400
+	'rollout_times': 800
 }
 
 pvn_config = {
