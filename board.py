@@ -66,6 +66,7 @@ class Board(object):
 		#print("move", player, x, y)
 		if self.board[x,y,0] != 1.0:
 			print('move error:', x, y)
+			raise ValueError('move error: ' + str(x) + ' ' + str(y))
 			return False
 		self.board[x,y,0] = 0.0
 		self.board[x,y,player] = 1.0

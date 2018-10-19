@@ -1,5 +1,5 @@
 import numpy as np
-
+import sys
 class HumanPlayer(object):
 	def __init__(self):
 		self.board = None
@@ -10,7 +10,7 @@ class HumanPlayer(object):
 		return self
 	
 	def get_move_policy_value(self, board):
-		return (self.get_move(board), [[self.last_mv], [1.0]], 1.0)
+		return (self.get_move(board), [np.asarray([self.last_mv]), np.ones(1)], 1.0)
 
 	def get_move(self, board):
 		pos = input("Your move:")
@@ -18,6 +18,92 @@ class HumanPlayer(object):
 		pos = [int(i) for i in pos]
 		self.last_mv = pos[0] * board.n + pos[1]
 		return self.last_mv
+		
+def getchar():
+	# Returns a single character from standard input
+	import os
+	ch = ''
+	if os.name == 'nt': # how it works on windows
+		import msvcrt
+		ch = msvcrt.getch()
+	else:
+		import tty, termios, sys
+		fd = sys.stdin.fileno()
+		old_settings = termios.tcgetattr(fd)
+		try:
+			tty.setraw(sys.stdin.fileno())
+			ch = sys.stdin.read(1)
+		finally:
+			termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+	if ord(ch) == 3: quit() # handle ctrl+C
+	return ch
+  
+class HumanWASDPlayer(object):
+	def __init__(self):
+		self.cur = 0
+
+	def get_move_policy_value(self, board):
+		return (self.get_move(board), [np.asarray([self.cur]), np.ones(1)], 1.0)
+
+	def show_board(self, board):
+		n = board.n
+		x = self.cur // n
+		y = self.cur % n
+		b = board.get_board()
+		flag = False
+		for i in range(n):
+			s = ''
+			for j in range(n):
+				if i == x and j == y:
+					s += '#'
+					if b[i,j,0] == 1.0:
+						flag = True
+				elif b[i,j,0] == 1.0:
+					s += '_'
+				elif b[i,j,1] == 1.0:
+					s += '1'
+				else:
+					s += '2'
+			print(s)
+		if flag:
+			print(x, y, "is available")
+		else:
+			print(x, y, "is not available")
+	def check_cur(self, board, cur, nxt_cur):
+		if nxt_cur < 0 or nxt_cur >= board.n * board.n:
+			return cur
+		return nxt_cur
+	def get_move(self, board):
+		h = board.get_history()
+		n = board.n
+		if len(h) == 0:
+			self.cur = n // 2 * n + n // 2
+		else:
+			self.cur = h[-1]
+		while True:
+			self.show_board(board)
+			c = getchar()
+			if c == 'w':
+				self.cur = self.check_cur(board, self.cur, self.cur - board.n)
+			elif c == 'a':
+				self.cur = self.check_cur(board, self.cur, self.cur - 1)
+			elif c == 's':
+				self.cur = self.check_cur(board, self.cur, self.cur + board.n)
+			elif c == 'd':
+					self.cur = self.check_cur(board, self.cur, self.cur + 1)
+			elif c == '\r':
+				break
+			try:
+				print(int(c))
+			except ValueError as err:
+				print(err)
+				continue
+				
+		return self.cur
+			
+			
+			
+	
 		
 class NoobPlayer(object):
 	def __init__(self, n=15, m=5):

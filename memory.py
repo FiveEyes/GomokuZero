@@ -12,7 +12,6 @@ import config
 
 board_n = config.board_config['board_n']
 win = config.board_config['win']
-save_path = config.memory_config['save_path']
 
 def decode_board(bh):
 	bs = []
@@ -63,13 +62,15 @@ def gen_rotations(raw_board, policy, value):
 	return bs, ps, vs
 
 class Memory(object):
-	def __init__(self):
+	def __init__(self, save_path = None):
 		self.buff_max_sz = config.train_config['buff_max_sz']
 		self.bhb = []
 		self.phb = []
 		self.vhb = []
 		self.bpv_queue = Queue()
 		self.game_id = config.memory_config['game_id']
+		if save_path == None:
+			save_path = config.memory_config['save_path']
 		self.file_prefix = save_path + str(board_n) + '_' + str(win) + '_'
 		self.load_files(save_path)
 	

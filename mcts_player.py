@@ -1,5 +1,6 @@
 from mcts import MCTS
 import numpy as np
+import copy
 import config
 
 class MCTSPlayer(object):
@@ -26,6 +27,7 @@ class MCTSPlayer(object):
 		
 		policy, value = self.mcts.get_policy_value()
 		policy[1] = np.asarray(policy[1])
+		#policy[1][policy[1] < 0.01] = 0.0
 		policy[1] /= policy[1].sum()
 		#print(policy)
 		
@@ -38,6 +40,12 @@ class MCTSPlayer(object):
 			#print("real policy", p, "move", move)
 		elif self.play_style == 1:
 			move = np.random.choice(policy[0], p=policy[1])
+		elif self.play_style == 2:
+			p = copy.deepcopy(policy[1])
+			p[p<0.01] = 0.0
+			p /= p.sum()
+			move = np.random.choice(policy[0], p = p)
+			#move = np.random.choice(policy[0], p = policy[1])
 		else:
-			move = policy[np.argmax(policy[1])]
+			move = policy[0][np.argmax(policy[1])]
 		return move, policy, value

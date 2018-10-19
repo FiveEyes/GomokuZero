@@ -56,6 +56,8 @@ class MCTS(object):
 		self.pvnet_fn = pvnet_fn
 		self.using_temperature = True
 		self.temperature_step = config.mcts_config['temperature_step']
+		self.temp_mode = config.mcts_config['temp_mode']
+		self.threshold = config.mcts_config['threshold']
 		self.noob = NoobPlayer(board.n, board.m)
 		
 	def select_leaf(self):
@@ -117,9 +119,16 @@ class MCTS(object):
 			if self.step <= self.temperature_step:
 				policy_probs = [ node.N / self.root.N for (mv, node) in self.root.children.items()]
 			else:
-				best_move = max(self.root.children.items(), key=lambda mv_node: mv_node[1].N)[0]
-				policy_probs = np.zeros(len(policy_move))
-				policy_probs[policy_move.index(best_move)] = 1.0
+				if self.temp_mode == 0:
+					best_move = max(self.root.children.items(), key=lambda mv_node: mv_node[1].N)[0]
+					policy_probs = np.zeros(len(policy_move))
+					policy_probs[policy_move.index(best_move)] = 1.0
+				else:
+					policy_probs = [ node.N / self.root.N for (mv, node) in self.root.children.items()]
+					policy_probs = np.asarray(policy_probs)
+					policy_probs[policy_probs < 0.01] = 0.0
+					policy_probs /= policy_probs.sum()
+					#print("policy_probs", policy_probs)
 		else:
 			policy_probs = [ node.N / self.root.N for (mv, node) in self.root.children.items()]
 		policy = [np.asarray(policy_move), np.asarray(policy_probs)]
