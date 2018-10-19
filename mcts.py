@@ -95,7 +95,7 @@ class MCTS(object):
 		mv, policy, value = self.noob.suggest(board)
 		if mv == None:
 			policy, value = self.pvnet_fn(board)
-		if value == 0.0:
+		elif value == 0.0:
 			_, value = self.pvnet_fn(board)
 		node.expand(policy, value)
 	

@@ -25,7 +25,7 @@ class MCTSPlayer(object):
 		self.start_tree_search()
 		
 		policy, value = self.mcts.get_policy_value()
-		
+		policy /= policy.sum()
 		#print(policy)
 		
 		if self.play_style == 0:
@@ -34,7 +34,7 @@ class MCTSPlayer(object):
 			p = (1.0-eps)*policy[1]+eps*dirichlet
 			p /= p.sum()
 			move = np.random.choice(policy[0], p = p)
-			print("real policy", p, "move", move)
+			#print("real policy", p, "move", move)
 		elif self.play_style == 1:
 			move = np.random.choice(policy[0], p=policy[1])
 		else:
