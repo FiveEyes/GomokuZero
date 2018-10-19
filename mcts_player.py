@@ -25,7 +25,8 @@ class MCTSPlayer(object):
 		self.start_tree_search()
 		
 		policy, value = self.mcts.get_policy_value()
-		policy /= policy.sum()
+		policy[1] = np.asarray(policy[1])
+		policy[1] /= policy[1].sum()
 		#print(policy)
 		
 		if self.play_style == 0:
