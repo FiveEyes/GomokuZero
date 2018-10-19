@@ -29,6 +29,17 @@ class NoobPlayer(object):
 				return (self.n // 2 * self.n + self.n // 2), [[(self.n // 2 * self.n + self.n // 2)], [1.0]], 0.0
 			else:
 				return None, None, None
+		if len(board.get_history()) == 1 and board.get_history()[0] == (self.n // 2 * self.n + self.n // 2):
+			if np.random.randint(2) == 0:
+				x = self.n // 2
+				y = x
+				move = []
+				for (dx, dy) in [(1,0), (0,1), (1,1), (1,-1)]:
+					move.append((x+dx) * self.n + y+dy)
+					move.append((x-dx) * self.n + y-dy)
+				policy = np.ones(len(move)) / len(move)
+				return np.random.choice(move), [move, policy], 0.0
+			
 		p1 = board.get_cur_player()
 		p2 = 3 - p1
 		policy_move = []

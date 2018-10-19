@@ -8,17 +8,18 @@ game_config = {
 }
 
 mcts_config = {
-	'temperature_step': 40
+	'temperature_step': 20
 }
 
 mcts_player_config = {
-	'rollout_times': 800
+	'dirichlet_eps': 0.25,
+	'rollout_times': 1200
 }
 
 pvn_config = {
-	'epochs': 30,
+	'epochs': 20,
 	'batch_size': 512,
-	'model_filename': "first_model_" + str(board_config['board_n']) + '_' +str(board_config['win']) + '.h5'
+	'model_filename': "second_model_" + str(board_config['board_n']) + '_' +str(board_config['win']) + '.h5'
 }
 
 train_config = {
@@ -29,10 +30,10 @@ train_config = {
 server_config = {
 	'game_num': 100,
 	'worker_n': 20,
-	'worker_play_n': 5
+	'best_player': True
 }
 
 memory_config = {
-	'game_id': 0,
+	'game_id': 400,
 	'save_path': 'selfplaydata/'
 }

@@ -38,7 +38,6 @@ class SmartServer(object):
 		self.pvnet = pvnet
 		self.train_fn = pvnet.get_train_fn()
 		self.worker_n = config.server_config['worker_n']
-		self.worker_play_n = config.server_config['worker_play_n']
 		self.call_queue = Queue()
 		self.quit_queue = Queue()
 		self.ret_qs = []
@@ -70,7 +69,9 @@ class SmartServer(object):
 		
 	def init_workers(self):
 		self.pw = PredictWorker(self)
-		self.workers = [ SmartWorker(i, self.worker_play_n, self) for i in range(self.worker_n)]
+		self.workers = [ SmartWorker(i, self, play_style=0) for i in range(self.worker_n)]
+		self.workers[0].play_style = 1
+		self.workers[1].play_style = 1
 		workers_processes = [Process(target=w.get_run_fn()) for w in self.workers]
 		
 		self.ret_qs = [ w.get_ret_queue() for w in self.workers]
@@ -80,8 +81,14 @@ class SmartServer(object):
 		for i, worker_process in enumerate(workers_processes):
 			print("Starting worker {}".format(i))
 			worker_process.start()
+			
 
 	def train(self):
+		#print("Training")
+		#self.train_fn(*self.mem.get_history())
+		#self.pvnet.save_model(config.pvn_config['model_filename'])
+		#print("Done")
+		
 		for i in range(self.game_num):
 			self.game_id_queue.put(self.game_id + i)
 		self.game_id += self.game_num

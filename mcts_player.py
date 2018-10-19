@@ -3,11 +3,12 @@ import numpy as np
 import config
 
 class MCTSPlayer(object):
-	def __init__(self, pvnet_fn, selfplay = True):
+	def __init__(self, pvnet_fn, play_style = 0):
 		self.mcts = None
 		self.pvnet_fn = pvnet_fn
-		self.selfplay = selfplay
+		self.play_style = play_style
 		self.rollout_times = config.mcts_player_config['rollout_times']
+		self.dirichlet_eps = config.mcts_player_config['dirichlet_eps']
 	def init(self):
 		self.mcts = None
 	def start_tree_search(self):
@@ -27,13 +28,15 @@ class MCTSPlayer(object):
 		
 		#print(policy)
 		
-		if self.selfplay:
-			eps = 0.25
-			dirichlet = np.random.dirichlet(0.3*np.ones(len(policy[0])))
+		if self.play_style == 0:
+			eps = self.dirichlet_eps
+			dirichlet = np.random.dirichlet(0.03*np.ones(len(policy[0])))
 			p = (1.0-eps)*policy[1]+eps*dirichlet
 			p /= p.sum()
-			#print(p, sum(p))
 			move = np.random.choice(policy[0], p = p)
-		else:
+			print("real policy", p, "move", move)
+		elif self.play_style == 1:
 			move = np.random.choice(policy[0], p=policy[1])
+		else:
+			move = policy[np.argmax(policy[1])]
 		return move, policy, value

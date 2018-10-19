@@ -35,7 +35,7 @@ def gen_mirrors(raw_board, policy, value):
 	ret_board[:,:,2] = raw_board[:,:,1]
 	ret_board[:,:,3] = 1.0 - raw_board[:,:,3]
 	ret_policy = copy.deepcopy(policy)
-	ret_value = -value
+	ret_value = value
 	return ret_board, ret_policy, ret_value
 	
 def gen_rotations(raw_board, policy, value):
