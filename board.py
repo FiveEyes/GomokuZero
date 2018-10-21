@@ -11,6 +11,9 @@ class Board(object):
 		
 		self.board = np.zeros((n,n,4), dtype='float32')
 		
+		self.available = np.zeros(n * n, dtype='int')
+		self.available[n // 2 * n + n // 2] = 1
+		
 		for i in range(self.n):
 			for j in range(self.n):
 				self.board[i,j,0] = 1.0
@@ -18,6 +21,9 @@ class Board(object):
 	def init(self):
 		self.history = []
 		self.board = np.zeros((self.n,self.n,4), dtype='float32')
+		self.available = np.zeros(self.n * self.n, dtype='int')
+		self.available[self.n // 2 * self.n + self.n // 2] = 1
+
 		for i in range(self.n):
 			for j in range(self.n):
 				self.board[i,j,0] = 1.0
@@ -36,6 +42,9 @@ class Board(object):
 					str += '2'
 			print(str)
 		print(self.history)
+		
+	def get_available(self):
+		return self.available
 		
 	def get_len(self):
 		return len(self.history)
@@ -57,6 +66,20 @@ class Board(object):
 		x = pos // self.n
 		y = pos % self.n
 		return self.board[x,y,0] == 1.0
+	
+	
+	def update_available(self, pos):
+		x = pos // self.n
+		y = pos % self.n
+		lx = max(0, x - 3)
+		hx = min(self.n, x + 4)
+		ly = max(0, y - 3)
+		hy = min(self.n, y + 4)
+		for i in range(lx, hx):
+			for j in range(ly, hy):
+				if self.board[i, j, 0] > 0.0:
+					self.available[i * self.n + j] = 1
+		self.available[x * self.n + y] = 0
 		
 	def move(self, pos):
 		player = self.get_cur_player()
@@ -71,6 +94,7 @@ class Board(object):
 		self.board[x,y,0] = 0.0
 		self.board[x,y,player] = 1.0
 		self.history.append(pos)
+		self.update_available(pos)
 		return True
 	
 	def last_move_is_end(self):

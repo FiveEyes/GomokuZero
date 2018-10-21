@@ -129,7 +129,8 @@ class PolicyValueNet():
 			with self.graph.as_default():
 				probs, value = self.model.predict(nparr_board.reshape(1, self.n, self.n, 4))
 			self.pvnet_fn_lock.release()
-			policy_move = nparr_board[:,:,0].reshape(self.n * self.n).nonzero()[0]
+			#policy_move = nparr_board[:,:,0].reshape(self.n * self.n).nonzero()[0]
+			policy_move = board.get_available().nonzero()[0]
 			policy_probs = probs[0][policy_move]
 			
 			return (policy_move, policy_probs), value[0][0]
@@ -138,8 +139,9 @@ class PolicyValueNet():
 			nparr_boards = np.asarray([b.get_board().reshape(self.n, self.n, 4) for b in boards])
 			with self.graph.as_default():
 				probs, value = self.model.predict(nparr_boards)
-			
-			policy_moves = [ b[:,:,0].reshape(self.n * self.n).nonzero()[0] for b in nparr_boards]
+			policy_moves = [ b.get_available().nonzero()[0] for b in boards]
+			#if len(policy_move) == 0:
+			#	policy_moves = [ b[:,:,0].reshape(self.n * self.n).nonzero()[0] for b in nparr_boards]
 			policy_probs = [ p[policy_moves[i]] for i, p in enumerate(probs)]
 			return zip(policy_moves, policy_probs, value.ravel())
 		return pvnet_fn if single else pvnet_fn_m
