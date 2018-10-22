@@ -10,13 +10,19 @@ def simpl_policy(policy):
 	return [policy[0][index], policy[1][index]]
 	
 def show_board_policy_value(board, policy, value):
-	move_policy = zip(policy[0], policy[1])
-	move_policy = sorted(move_policy, key=lambda mp: mp[1])
+	
 	history = board.get_history()
 	last_x = history[-1] // board.n
 	last_y = history[-1] % board.n
-	best_x = move_policy[-1][0] // board.n
-	best_y = move_policy[-1][0] % board.n
+	
+	move_policy = zip(policy[0], policy[1])
+	move_policy = sorted(move_policy, key=lambda mp: mp[1])
+	if len(policy[0]) > 0:
+		best_x = move_policy[-1][0] // board.n
+		best_y = move_policy[-1][0] % board.n
+	else:
+		best_x = -1
+		best_y = -1
 	print("{0}x{0}-{1}, player {2}, len {3}".format(board.n, board.m, 3 - board.get_cur_player(), len(history)))
 	b = board.get_board()
 	for i in range(board.n):
