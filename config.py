@@ -15,7 +15,7 @@ mcts_config = {
 
 mcts_player_config = {
 	'dirichlet_eps': 0.1,
-	'rollout_times': 1600,
+	'rollout_times': 2400,
 }
 
 pvn_config = {
@@ -26,7 +26,7 @@ pvn_config = {
 
 train_config = {
 	#'train_samples': 50,
-	'buff_max_sz': 200000,
+	'buff_max_sz': 120000,
 }
 
 server_config = {
@@ -35,6 +35,6 @@ server_config = {
 }
 
 memory_config = {
-	'game_id': 2000,
+	'game_id': 3000,
 	'save_path': 'selfplaydata/',
 }

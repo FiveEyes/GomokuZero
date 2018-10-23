@@ -3,7 +3,7 @@ import copy
 import math
 
 import config
-from players import NoobPlayer
+from players import NoobPlayer, BetterNoobPlayer
 
 c_PUCT = 5
 
@@ -66,7 +66,7 @@ class MCTSNode:
 			if self.parent.alive_children_count == 0:
 				self.parent.winner = 1
 				self.parent.U = self.U + 1
-				print("found 100% win:", "move", self.parent.move)
+				#print("found 100% win:", "move", self.parent.move)
 				for mv, node in self.parent.children.items():
 					if node.winner != -1:
 						print("winner error")
@@ -121,7 +121,7 @@ class MCTS(object):
 		self.temperature_step = config.mcts_config['temperature_step']
 		self.temp_mode = config.mcts_config['temp_mode']
 		self.threshold = config.mcts_config['threshold']
-		self.noob = NoobPlayer(board.n, board.m)
+		self.noob = BetterNoobPlayer(board.n, board.m)
 		
 	def select_leaf(self):
 		board = copy.deepcopy(self.board)
@@ -150,8 +150,15 @@ class MCTS(object):
 			
 		if mv == None:
 			policy, value = self.pvnet_fn(board)
+		elif policy[1] is None:
+			policy_moves = policy[0]
+			net_policy, value = self.pvnet_fn(board)
+			net_policy_dict = dict(zip(net_policy[0], net_policy[1]))
+			policy_probs = [net_policy_dict[mv] for mv in policy_moves]
+			policy = [policy_moves, policy_probs]
 		elif value == 0.0:
 			_, value = self.pvnet_fn(board)
+		
 		node.expand(policy, value)
 	
 	def tree_search(self):

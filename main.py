@@ -32,6 +32,9 @@ def simple_train():
 def smart_worker_train():
 	pvnet = PolicyValueNet(board_n, model_filename)
 	server = SmartServer(pvnet)
+	#print("Training")
+	#server.train_fn(*server.mem.get_history())
+	#print("Done")
 	while True:
 		server.train()
 		pvnet.save_model(model_filename)

@@ -31,7 +31,7 @@ def conv_block(input_tensor, kernel_size, filter, l2_const):
 	out = Activation('relu')(x)
 	return out
 		
-def residula_block(input_tensor, kernel_size, filter, l2_const):
+def residual_block(input_tensor, kernel_size, filter, l2_const):
 	shortcut = Conv2D(filter, kernel_size = (1,1), padding = 'same',
 	kernel_regularizer=l2(l2_const),
 	kernel_initializer='he_normal')(input_tensor)
@@ -53,7 +53,6 @@ def residula_block(input_tensor, kernel_size, filter, l2_const):
 
 
 class PolicyValueNet():
-	
 	def __init__(self, n = 15, filename=None):
 		self.n = n
 		self.l2_const = 1e-4
@@ -65,19 +64,14 @@ class PolicyValueNet():
 		self.model._make_predict_function()	
 		self.graph = tf.get_default_graph()
 		print(self.model.summary())
-
-
-
-
-	
-	
+		
 	def build_model(self):
 		print("build_model")
 		x = net = Input((self.n, self.n, 4))
 		
 		net = conv_block(net, (3,3), 128, self.l2_const)
 		for i in range(block_sz):
-			net = residula_block(net, (3,3), 128, self.l2_const)
+			net = residual_block(net, (3,3), 128, self.l2_const)
 
 		policy_net = Conv2D(
 			filters=2,

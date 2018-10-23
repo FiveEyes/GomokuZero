@@ -7,11 +7,12 @@ import copy
 
 from mcts_player import MCTSPlayer
 
-from policy_value_net import PolicyValueNet 
+#from policy_value_net import PolicyValueNet 
 from board import Board
 from game import Game 
-from players import HumanPlayer, HumanWASDPlayer
+from players import HumanPlayer, HumanWASDPlayer, BetterNoobPlayer
 from memory import Memory
+from replay import replay
 import config
 
 board_n = config.board_config['board_n']
@@ -26,21 +27,10 @@ def play(p1, p2, dp):
 
 def main():		
 	human = HumanWASDPlayer()
-	#play(human, human)
-	pvnet = PolicyValueNet(board_n, model_filename)
-	mem = Memory()
+	#bh, ph, vh = play(human, human, None)
+	#replay(bh, BetterNoobPlayer())
+	replay([112, 96, 111, 95, 109, 94, 108, 93, 110], BetterNoobPlayer())
 
-	while True:
-		
-		mcts_player = MCTSPlayer(pvnet.get_pvnet_fn(), play_style = 3)
-		bh, ph, vh = play(human, mcts_player, mcts_player)
-		mem.save_data((bh, ph, vh))
-		
-		mcts_player = MCTSPlayer(pvnet.get_pvnet_fn(), play_style = 3)
-		bh, ph, vh = play(mcts_player, human, mcts_player)
-		mem.save_data((bh, ph, vh))
-
-		
 		
 if __name__ == "__main__":
 	main()

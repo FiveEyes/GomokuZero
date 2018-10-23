@@ -15,10 +15,21 @@ import config
 board_n = config.board_config['board_n']
 win = config.board_config['win']
 
-def main():
-	#simple_train()
-	smart_worker_train()
+def replay(bh, player):
+	board = Board(board_n, win)
+	mv, policy, value = player.get_move_policy_value(board)
+	print(mv, policy, value)
+	for b in bh:
+		board.move(b)
+		mv, policy, value = player.get_move_policy_value(board)
+		board.show()
+		print(mv, policy, value)
+
 	
+
+
+def main():
+	return
 		
 		
 if __name__ == "__main__":
