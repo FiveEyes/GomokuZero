@@ -19,26 +19,28 @@ win = config.board_config['win']
 
 model_filename = config.pvn_config['model_filename']
 
-def play(p1, p2, dp):
+def play(p1, p2, dp = None):
 	board = Board(board_n, win)
 	game = Game()
 	return game.play(board, p1, p2, dp)
 
 def main():		
 	human = HumanWASDPlayer()
-	#play(human, human)
+	play(human, human)
 	pvnet = PolicyValueNet(board_n, model_filename)
 	mem = Memory()
 
 	while True:
 		
 		mcts_player = MCTSPlayer(pvnet.get_pvnet_fn(), play_style = 3)
-		bh, ph, vh = play(human, mcts_player, mcts_player)
+		bh, ph, vh = play(mcts_player, human, mcts_player)
 		mem.save_data((bh, ph, vh))
 		
 		mcts_player = MCTSPlayer(pvnet.get_pvnet_fn(), play_style = 3)
-		bh, ph, vh = play(mcts_player, human, mcts_player)
+		bh, ph, vh = play(human, mcts_player, mcts_player)
 		mem.save_data((bh, ph, vh))
+		
+		
 
 		
 		

@@ -70,8 +70,10 @@ class SmartServer(object):
 	def init_workers(self):
 		self.pw = PredictWorker(self)
 		self.workers = [ SmartWorker(i, self, play_style=0) for i in range(self.worker_n)]
-		self.workers[0].play_style = 1
-		self.workers[1].play_style = 2
+		#self.workers[0].play_style = 1
+		#self.workers[1].play_style = 2
+		self.workers[0].set_moves([112, 128, 126])
+		self.workers[1].set_moves([112, 128, 126])
 		workers_processes = [Process(target=w.get_run_fn()) for w in self.workers]
 		
 		self.ret_qs = [ w.get_ret_queue() for w in self.workers]

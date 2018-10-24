@@ -15,7 +15,7 @@ mcts_config = {
 
 mcts_player_config = {
 	'dirichlet_eps': 0.1,
-	'rollout_times': 2400,
+	'rollout_times': 1600,
 }
 
 pvn_config = {

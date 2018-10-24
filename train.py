@@ -11,11 +11,11 @@ import config
 board_n = config.board_config['board_n']
 win = config.board_config['win']
 
-def gen_selfplay_data(pvnet_fn, play_style = 0, name_str = None):
+def gen_selfplay_data(pvnet_fn, play_style = 0, name_str = None, moves = []):
 	board = Board(board_n, win)
 	game = Game(name_str)
 	mcts_player = MCTSPlayer(pvnet_fn, play_style = play_style)
-	bh, ph, vh = game.selfplay(board, mcts_player)
+	bh, ph, vh = game.selfplay(board, mcts_player, moves)
 	return bh, ph, vh
 		
 

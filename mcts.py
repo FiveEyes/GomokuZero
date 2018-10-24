@@ -26,9 +26,10 @@ class MCTSNode:
 		return mv, node
 	def expand(self, policy, value):
 		self.Q = value
+		base = 0.1 / len(policy[1])
 		for mv,pr in zip(policy[0], policy[1]):
 			if mv not in self.children:
-				self.children[mv] = MCTSNode(self, mv, pr)
+				self.children[mv] = MCTSNode(self, mv, pr + base)
 		self.alive_children_count = len(policy[0])
 	
 	def get_value(self):

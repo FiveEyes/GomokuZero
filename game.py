@@ -80,17 +80,21 @@ class Game(object):
 				break
 		return board.get_history(), policy_history, value_history
 
-	def selfplay(self, board, player):
+	def selfplay(self, board, player, moves = []):
 		show_b = config.game_config['show']
-		noob = NoobPlayer(board.n, board.m)
+		#noob = NoobPlayer(board.n, board.m)
 		policy_history = []
 		value_history = []
+		i = 0
 		while True:
 			while True:
 				#move, policy, value = noob.suggest(board)
 				#if move == None:
 				#	move, policy, value = player.get_move_policy_value(board)
 				move, policy, value = player.get_move_policy_value(board)
+				if len(moves) > i:
+					move = moves[i]
+					i += 1
 				if board.move(move):
 					break
 			policy = simpl_policy(policy)
