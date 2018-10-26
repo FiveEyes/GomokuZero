@@ -10,16 +10,17 @@ game_config = {
 mcts_config = {
 	'temperature_step': 30,
 	'temp_mode': 1,
-	'threshold': 0.01
+	'threshold': 0.01,
+	'expand_eps': 0.8
 }
 
 mcts_player_config = {
-	'dirichlet_eps': 0.1,
+	'dirichlet_eps': 0.20,
 	'rollout_times': 1600,
 }
 
 pvn_config = {
-	'epochs': 20,
+	'epochs': 15,
 	'batch_size': 512,
 	'model_filename': "first_model_" + str(board_config['board_n']) + '_' +str(board_config['win']) + '.h5',
 }
@@ -35,6 +36,6 @@ server_config = {
 }
 
 memory_config = {
-	'game_id': 3000,
+	'game_id': 4400,
 	'save_path': 'selfplaydata/',
 }

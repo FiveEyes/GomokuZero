@@ -21,16 +21,18 @@ class MCTSNode:
 		# if current player wins, winner = -1, else winner = 1
 		self.winner = 0
 		self.alive_children_count = 0
+		
+		self.expand_eps = config.mcts_config['expand_eps']
 	def select(self):
 		mv, node = max(self.children.items(), key=lambda mv_node: mv_node[1].get_value())
 		return mv, node
 	def expand(self, policy, value):
 		self.Q = value
-		base = 0.1 / len(policy[1])
+		base = (1 - self.expand_eps) / len(policy[1])
 		for mv,pr in zip(policy[0], policy[1]):
 			if mv not in self.children:
-				self.children[mv] = MCTSNode(self, mv, pr + base)
-		self.alive_children_count = len(policy[0])
+				self.children[mv] = MCTSNode(self, mv, self.expand_eps * pr + base)
+		self.alive_children_count = len(self.children)
 	
 	def get_value(self):
 		if self.winner == -1:

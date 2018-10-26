@@ -29,7 +29,7 @@ def main():
 	human = HumanWASDPlayer()
 	#bh, ph, vh = play(human, human, None)
 	#replay(bh, BetterNoobPlayer())
-	replay([112, 96, 111, 95, 109, 94, 108, 93, 110], BetterNoobPlayer())
+	replay([112, 98, 114, 113, 128, 142, 144, 160, 129, 99, 127, 126, 130], BetterNoobPlayer())
 
 		
 if __name__ == "__main__":
