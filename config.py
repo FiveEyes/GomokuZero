@@ -16,13 +16,13 @@ mcts_config = {
 
 mcts_player_config = {
 	'dirichlet_eps': 0.20,
-	'rollout_times': 1600,
+	'rollout_times': 3200,
 }
 
 pvn_config = {
 	'epochs': 15,
 	'batch_size': 512,
-	'model_filename': "first_model_" + str(board_config['board_n']) + '_' +str(board_config['win']) + '.h5',
+	'model_filename': "first_model_" + str(board_config['board_n']) + '_' +str(board_config['win']) + '.pt',
 }
 
 train_config = {
@@ -31,11 +31,11 @@ train_config = {
 }
 
 server_config = {
-	'game_num': 100,
-	'worker_n': 20,
+	'game_num': 64,
+	'worker_n': 24,
 }
 
 memory_config = {
-	'game_id': 4400,
+	'game_id': 1200,
 	'save_path': 'selfplaydata/',
 }

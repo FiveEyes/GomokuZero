@@ -8,10 +8,10 @@ import copy
 from mcts_player import MCTSPlayer
 
 #from policy_value_net import PolicyValueNet 
-from board import Board
+from board_pytorch import Board
 from game import Game 
 from players import HumanPlayer, HumanWASDPlayer, BetterNoobPlayer
-from memory import Memory
+from memory_pytorch import Memory
 from replay import replay
 import config
 

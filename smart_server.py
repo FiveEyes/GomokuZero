@@ -2,7 +2,7 @@ from multiprocessing import Process, Queue
 
 from threading import Thread
 
-from memory import Memory
+from memory_pytorch import Memory
 from smart_worker import SmartWorker
 import config
 class PredictWorker(Thread):
@@ -73,10 +73,10 @@ class SmartServer(object):
 		#self.workers[0].play_style = 1
 		#self.workers[1].play_style = 2
 		self.workers[0].set_moves([112, 128, 126])
-		self.workers[1].set_moves([112, 97, 96, 128, 80, 64, 110, 111, 124, 138, 125, 95, 126, 127, 79, 78, 122, 123, 108, 143, 159, 94, 140, 98, 92, 76, 156])
-		self.workers[2].set_moves([112, 98, 114, 113, 128, 142, 144, 160, 129, 99, 127, 126, 130, 131, 158, 172, 100, 174])
-		self.workers[3].set_moves([112, 98, 114, 113, 128, 142, 144, 160, 129, 99, 127, 126, 130, 131, 158, 172, 100, 174, 116, 102, 115, 85, 132, 84, 148, 164, 146, 117, 145, 147, 162, 178, 176, 57, 71, 87, 72, 86, 83, 88])
-		self.workers[4].set_moves([112, 98, 114, 113, 128, 142, 144, 160, 129, 99, 127, 126, 130, 131, 158, 172, 100, 174, 87])
+		#self.workers[1].set_moves([112, 97, 96, 128, 80, 64, 110, 111, 124, 138, 125, 95, 126, 127, 79, 78, 122, 123, 108, 143, 159, 94, 140, 98, 92, 76, 156])
+		#self.workers[2].set_moves([112, 98, 114, 113, 128, 142, 144, 160, 129, 99, 127, 126, 130, 131, 158, 172, 100, 174])
+		#self.workers[3].set_moves([112, 98, 114, 113, 128, 142, 144, 160, 129, 99, 127, 126, 130, 131, 158, 172, 100, 174, 116, 102, 115, 85, 132, 84, 148, 164, 146, 117, 145, 147, 162, 178, 176, 57, 71, 87, 72, 86, 83, 88])
+		#self.workers[4].set_moves([112, 98, 114, 113, 128, 142, 144, 160, 129, 99, 127, 126, 130, 131, 158, 172, 100, 174, 87])
 		
 		workers_processes = [Process(target=w.get_run_fn()) for w in self.workers]
 		

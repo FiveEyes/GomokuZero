@@ -4,8 +4,8 @@ import copy
 
 from mcts_player import MCTSPlayer
 
-from policy_value_net import PolicyValueNet 
-from board import Board
+from policy_value_net_pytorch import PolicyValueNet 
+from board_pytorch import Board
 from game import Game 
 from players import HumanPlayer
 from train import train

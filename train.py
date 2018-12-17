@@ -1,11 +1,11 @@
 import copy
 import numpy as np
 
-from policy_value_net import PolicyValueNet
-from board import Board
+from policy_value_net_pytorch import PolicyValueNet
+from board_pytorch import Board
 from game import Game
 from mcts_player import MCTSPlayer
-from memory import Memory
+from memory_pytorch import Memory
 import config
 
 board_n = config.board_config['board_n']

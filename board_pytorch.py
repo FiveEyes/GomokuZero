@@ -9,24 +9,20 @@ class Board(object):
 		if no_init != False:
 			return
 		
-		self.board = np.zeros((n,n,4), dtype='float32')
+		self.board = np.zeros((4,n,n), dtype='float32')
 		
 		self.available = np.zeros(n * n, dtype='int')
 		self.available[n // 2 * n + n // 2] = 1
 		
-		for i in range(self.n):
-			for j in range(self.n):
-				self.board[i,j,0] = 1.0
+		self.board[0,:,:] = 1.0
 
 	def init(self):
 		self.history = []
-		self.board = np.zeros((self.n,self.n,4), dtype='float32')
+		self.board = np.zeros((4,self.n,self.n), dtype='float32')
 		self.available = np.zeros(self.n * self.n, dtype='int')
 		self.available[self.n // 2 * self.n + self.n // 2] = 1
 
-		for i in range(self.n):
-			for j in range(self.n):
-				self.board[i,j,0] = 1.0
+		self.board[0,:,:] = 1.0
 				
 	def show(self):
 		print("{0}x{0}-{1}, player {2}".format(self.n, self.m, self.get_cur_player()))
@@ -34,9 +30,9 @@ class Board(object):
 		for i in range(self.n):
 			str = ''
 			for j in range(self.n):
-				if board[i,j,0] == 1.0:
+				if board[0,i,j] == 1.0:
 					str += '_'
-				elif board[i,j,1] == 1.0:
+				elif board[0,i,j] == 1.0:
 					str += '1'
 				else:
 					str += '2'
@@ -51,7 +47,7 @@ class Board(object):
 
 	def get_board(self):
 		player = self.get_cur_player()
-		self.board[:,:,3] = player - 1.0
+		self.board[3,:,:] = player - 1.0
 		return self.board
 	def get_history(self):
 		return self.history
@@ -65,7 +61,7 @@ class Board(object):
 	def move_is_enable(self, pos):
 		x = pos // self.n
 		y = pos % self.n
-		return self.board[x,y,0] == 1.0
+		return self.board[0,x,y] == 1.0
 	
 	
 	def update_available(self, pos):
@@ -77,7 +73,7 @@ class Board(object):
 		hy = min(self.n, y + 4)
 		for i in range(lx, hx):
 			for j in range(ly, hy):
-				if self.board[i, j, 0] > 0.0:
+				if self.board[0, i, j] > 0.0:
 					self.available[i * self.n + j] = 1
 		self.available[x * self.n + y] = 0
 		
@@ -87,12 +83,12 @@ class Board(object):
 		x = pos // self.n
 		y = pos % self.n
 		#print("move", player, x, y)
-		if self.board[x,y,0] != 1.0:
+		if self.board[0,x,y] != 1.0:
 			print('move error:', x, y)
 			raise ValueError('move error: ' + str(x) + ' ' + str(y))
 			return False
-		self.board[x,y,0] = 0.0
-		self.board[x,y,player] = 1.0
+		self.board[0,x,y] = 0.0
+		self.board[player,x,y] = 1.0
 		self.history.append(pos)
 		self.update_available(pos)
 		return True
@@ -107,7 +103,7 @@ class Board(object):
 
 		cnt = 0
 		for i in range(max(x-self.m, 0), min(x+self.m+1, self.n)):
-			if self.board[i,y,player] != 0:
+			if self.board[player,i,y] != 0:
 				cnt += 1
 			else:
 				cnt = 0
@@ -115,7 +111,7 @@ class Board(object):
 				return player
 		cnt = 0
 		for i in range(max(y-self.m, 0), min(y+self.m+1, self.n)):
-			if self.board[x,i,player] != 0:
+			if self.board[player,x,i] != 0:
 				cnt += 1
 			else:
 				cnt = 0
@@ -128,7 +124,7 @@ class Board(object):
 		
 		cnt = 0
 		for i in range(2 * self.m):
-			if self.board[px, py, player] != 0:
+			if self.board[player,px, py] != 0:
 				cnt += 1
 			else:
 				cnt = 0
@@ -145,7 +141,7 @@ class Board(object):
 		
 		cnt = 0
 		for i in range(2 * self.m):
-			if self.board[px, py, player] != 0:
+			if self.board[player, px, py] != 0:
 				cnt += 1
 			else:
 				cnt = 0
@@ -158,7 +154,7 @@ class Board(object):
 		if len(self.history) == self.n2:
 			return -1
 		return 0
-		
+
 def show_board_policy_value(board, policy, value):
 	history = board.get_history()
 	last_x = history[-1] // board.n
@@ -183,7 +179,7 @@ def show_board_policy_value(board, policy, value):
 				s += "S"
 			elif b[0,i,j] == 1.0:
 				s += '_'
-			elif b[0,i,j] == 1.0:
+			elif b[1,i,j] == 1.0:
 				s += '1'
 			else:
 				s += '2'

@@ -3,8 +3,8 @@ import numpy as np
 from multiprocessing import Queue
 
 
-from policy_value_net import PolicyValueNet
-from board import Board
+from policy_value_net_pytorch import PolicyValueNet
+from board_pytorch import Board
 from game import Game
 from mcts_player import MCTSPlayer
 import train

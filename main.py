@@ -4,8 +4,8 @@ import copy
 
 from mcts_player import MCTSPlayer
 
-from policy_value_net import PolicyValueNet 
-from board import Board
+from policy_value_net_pytorch import PolicyValueNet 
+from board_pytorch import Board
 from game import Game 
 from players import HumanPlayer
 from train import train
@@ -15,7 +15,7 @@ import config
 board_n = config.board_config['board_n']
 win = config.board_config['win']
 
-model_filename = "first_model_" + str(board_n) + '_' +str(win) + '.h5'
+model_filename = "first_model_" + str(board_n) + '_' +str(win) + '.pt'
 
 def simple_train():
 	#board = Board(board_n, win)
@@ -33,7 +33,7 @@ def smart_worker_train():
 	pvnet = PolicyValueNet(board_n, model_filename)
 	server = SmartServer(pvnet)
 	#print("Training")
-	#server.train_fn(*server.mem.get_history())
+	server.train_fn(*server.mem.get_history())
 	#print("Done")
 	while True:
 		server.train()

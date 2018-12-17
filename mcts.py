@@ -3,7 +3,7 @@ import copy
 import math
 
 import config
-from players import NoobPlayer, BetterNoobPlayer
+from players_pytorch import BetterNoobPlayer
 
 c_PUCT = 5
 
