@@ -67,8 +67,9 @@ class PolicyValueNetImpl(nn.Module):
         
         self.value_net = ConvBlock(filter_sz, 1, 1)
         self.value_net_linear = nn.Sequential(
-            nn.Linear(self.n*self.n,filter_sz*2),
-            nn.Linear(filter_sz*2,1),
+            nn.Linear(self.n*self.n,filter_sz * 2),
+            nn.ReLU(True),
+            nn.Linear(filter_sz * 2,1),
             nn.Tanh(),
         )
         #self.celoss = nn.CrossEntropyLoss()
@@ -87,13 +88,38 @@ class PolicyValueNetImpl(nn.Module):
         
         return px, vx
     
-    def cross_entropy_loss(self, predict_policy, policy):
-        return torch.mean(torch.sum(-torch.log(predict_policy) * policy, 1))
+    def cross_entropy_loss(self, x, y):
+        x = F.relu(x - 1e-10) + 1e-10
+        ce = -torch.log(x) * y
+        return torch.mean(torch.sum(ce, 1))
+    
+    def policy_loss(self, predict_policy, policy):
+        return self.cross_entropy_loss(predict_policy, policy)
+        #return (self.cross_entropy_loss(predict_policy, policy) + self.cross_entropy_loss(policy, predict_policy)) / 2.0
+    def value_loss(self, predict_value, value):
+        return self.mseloss(predict_value, value) * 4.0
+        #xa = (predict_value + 1.0) / 2.0
+        #xb = (1.0 - predict_value) / 2.0
+        
+        #ya = (value + 1.0) / 2.0
+        #yb = (1.0 - value) / 2.0
+        #return self.cross_entropy_loss(xb, yb) + self.mseloss(predict_value, value) * 32.0
+        #return (self.cross_entropy_loss(xa, ya) + self.cross_entropy_loss(xb, yb) + self.cross_entropy_loss(ya, xa) + self.cross_entropy_loss(yb, xb)) / 4.0
+        #return (self.cross_entropy_loss(xa, ya) + self.cross_entropy_loss(xb, yb)) / 2.0
+        #custom_ce = -torch.log((2.0 - torch.abs(value - predict_value)) / 2.0) * torch.abs(value)
+        #print(self.mseloss(predict_value, value))
+        #return torch.mean(custom_ce)
+        
         
     def loss(self, predict_policy, predict_value, policy, value):
-        value_loss = self.mseloss(predict_value, value)
+        #print(predict_policy.shape, predict_value.shape, policy.shape, value.shape)
+        predict_value = predict_value.view(predict_value.size(0))
+        #value_loss = self.mseloss(predict_value, value) * 10.0
         #policy_loss = self.mseloss(predict_policy, policy)
-        policy_loss = self.cross_entropy_loss(predict_policy, policy) + self.mseloss(predict_policy, policy)
+        #policy_loss = self.cross_entropy_loss(predict_policy, policy) + self.mseloss(predict_policy, policy)
+        value_loss = self.value_loss(predict_value, value)
+        policy_loss = self.policy_loss(predict_policy, policy)
+        print(' ', value_loss.data.cpu().numpy(), policy_loss.data.cpu().numpy(), end='')
         return policy_loss + value_loss
 
 
@@ -102,7 +128,7 @@ class PolicyValueNet():
         self.n = n
         self.l2_const = 1e-4
         self.model = PolicyValueNetImpl(n)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.002)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.002, weight_decay=0.0005)
         if filename != None and os.path.exists(filename):
             self.model.load_state_dict(torch.load(filename))
             print("load", filename)

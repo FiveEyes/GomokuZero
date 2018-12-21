@@ -18,32 +18,33 @@ win = config.board_config['win']
 model_filename = "first_model_" + str(board_n) + '_' +str(win) + '.pt'
 
 def simple_train():
-	#board = Board(board_n, win)
-	#game = Game()
-	pvnet = PolicyValueNet(board_n, model_filename)
-	#mcts_player = MCTSPlayer(pvnet.get_pvnet_fn())
-	#bh, ph, vh = game.selfplay(board, mcts_player)
-	#bh, ph, vh = game.selfplay(board, HumanPlayer())
-	#print(vh)
-	while True:
-		train(pvnet, config.train_config['train_samples'])
-		pvnet.save_model(model_filename)
+    #board = Board(board_n, win)
+    #game = Game()
+    pvnet = PolicyValueNet(board_n, model_filename)
+    #mcts_player = MCTSPlayer(pvnet.get_pvnet_fn())
+    #bh, ph, vh = game.selfplay(board, mcts_player)
+    #bh, ph, vh = game.selfplay(board, HumanPlayer())
+    #print(vh)
+    while True:
+        train(pvnet, config.train_config['train_samples'])
+        pvnet.save_model(model_filename)
 
 def smart_worker_train():
-	pvnet = PolicyValueNet(board_n, model_filename)
-	server = SmartServer(pvnet)
-	#print("Training")
-	server.train_fn(*server.mem.get_history())
-	#print("Done")
-	while True:
-		server.train()
-		pvnet.save_model(model_filename)
+    pvnet = PolicyValueNet(board_n, model_filename)
+    server = SmartServer(pvnet)
+    #print("Training")
+    server.train_fn(*server.mem.get_history())
+    pvnet.save_model(model_filename)
+    #print("Done")
+    while True:
+        server.train()
+        pvnet.save_model(model_filename)
 
 def main():
-	#simple_train()
-	smart_worker_train()
+    #simple_train()
+    smart_worker_train()
 
-		
-		
+        
+        
 if __name__ == "__main__":
-	main()
+    main()
