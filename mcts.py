@@ -87,6 +87,12 @@ class MCTSNode:
             self.parent.winner = -1
             if self.parent.U == 0 or self.parent.U > self.U + 1:
                     self.parent.U = self.U + 1
+            for mv, node in self.parent.children.items():
+                    if node.winner == 1 and self.parent.U == node.U + 1:
+                        node.N = self.parent.N - 1
+                    else:
+                        node.N = 0
+                        
         self.parent.backup_winner()
     def is_leaf(self):
         return self.children == {}
@@ -174,6 +180,8 @@ class MCTS(object):
         node.expand(policy, value)
     
     def tree_search(self):
+        if self.root.winner != 0:
+            return
         chosen_leaf, board = self.select_leaf()
         value = 0.0
         if chosen_leaf.winner != 0:
@@ -213,3 +221,8 @@ class MCTS(object):
             self.root = self.root.get_child(board.history[i])
         self.step = len(board.history)
         self.root.parent = None
+    
+    def isDone(self):
+        if self.root.winner != 0:
+            return True
+        return False
